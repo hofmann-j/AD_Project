@@ -9,16 +9,71 @@ library(corrplot)
 library(FactoMineR)
 library(factoextra)
 library(readr)
+library(dplyr)
+library(reshape2)
+library(gridExtra)
 ```
 
 ```{r}
+#Lecture du dataset
+#On enleve la premiere colonne car repetition
+
 US_data <- read_csv("data.csv")
 US_data <- US_data[,-1]
 
 head(US_data)
 ```
-On supprime la première colonne car ce n'est que le conté et l'Etat mis ensemble (deux colonnes déjà existantes).
-3143 individus, et 34 variables.
+
+```{r}
+# Supprimer le symbole "%" et convertir en numérique
+US_data$`Less than 9th grade` <- as.numeric(sub("%", "", US_data$`Less than 9th grade`))
+US_data$`HS graduate and eq` <- as.numeric(sub("%", "", US_data$`HS graduate and eq`))
+US_data$`9th to 12th grade` <- as.numeric(sub("%", "", US_data$`9th to 12th grade`))
+US_data$`Graduate or professional degree` <- as.numeric(sub("%", "", US_data$`Graduate or professional degree`))
+US_data$`College,No Degree` <- as.numeric(sub("%", "", US_data$`College,No Degree`))
+US_data$`Associates Degree` <- as.numeric(sub("%", "", US_data$`Associates Degree`))
+US_data$`Bachelors Degree` <- as.numeric(sub("%", "", US_data$`Bachelors Degree`))
+
+#Creation d'une variable "Party"
+US_data$Party <- ifelse(US_data$`Democrat vote raw` > US_data$`Republican vote raw`, "Democrat", "Republican")
+
+# Mettre les colonnes en facteur
+US_data$State <- as.factor(US_data$State)
+US_data$Party <- as.factor(US_data$Party)
+
+
+head(US_data)
+```
+
+```{r}
+# Vérifie combien de NA par colonne
+colSums(is.na(US_data))  
+
+#On remplace par une valeur trouvée sur internet
+US_data[2675,18] <- 97491
+
+```
+
+```{r}
+#Creation de trois dataset sur la Californie, le Texas et l'Illinois
+California_data <- subset(US_data, State == "California")
+Texas_data <- subset(US_data, State == "Texas")
+Illinois_data <- subset(US_data, State == 'Illinois')
+
+#On enlève la variable State
+California_data <-California_data[,-2]
+Texas_data <-Texas_data[,-2]
+Illinois_data <-Illinois_data[,-2]
+```
+
+```{r}
+#write.csv(US_data, "US_data2.csv", row.names = TRUE)
+#write.csv(Texas_data, "Texas_data.csv", row.names = TRUE)
+#write.csv(California_data, "California_data.csv", row.names = TRUE)
+#write.csv(Illinois_data, "Illinois_data.csv", row.names = TRUE)
+```
+
+
 
 Individus : désigner par le comté (donc pas une seule personne physique, c'est une sorte de bureau de vote)
 Variables qualitatives : County et State
@@ -74,8 +129,5 @@ Colonne 32 : % Sales and Office (bureau)
 Colonne 33 : % Resources and Construction (énergie et BTP -industrie ?-)
 Colonne 34 : % Transportation
 
-```{r}
-US_data$party <- ifelse(US_data$value1 > US_data$value2, "Democrat", "Republican")
-```
 
 
