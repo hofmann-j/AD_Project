@@ -67,11 +67,79 @@ Illinois_data <-Illinois_data[,-2]
 ```
 
 ```{r}
+State_data <- US_data %>%
+  mutate(
+    # Multiplier chaque pourcentage par la population du comté
+    `Less than 9th grade weighted` = `Less than 9th grade` * `Total Pop`,
+    `9th to 12th grade weighted` = `9th to 12th grade` * `Total Pop`,
+    `HS graduate and eq weighted` = `HS graduate and eq` * `Total Pop`,
+    `College,No Degree weighted` = `College,No Degree` * `Total Pop`,
+    `Associates Degree weighted` = `Associates Degree` * `Total Pop`,
+    `Bachelors Degree weighted` = `Bachelors Degree` * `Total Pop`,
+    `Graduate or professional degree weighted` = `Graduate or professional degree` * `Total Pop`,
+    `Gini Index weighted` = `Gini Index` * `Total Pop`,
+    `Median income weighted` = `Median income` * `Total Pop`,
+    `Density weighted` = `Density` * `Total Pop`,
+    `Mean income weighted` = `Mean income` * `Area`,
+    `Hispanic or Latino % weighted` = `Hispanic or Latino %` * `Total Pop`,
+    `NH-White % weighted` = `NH-White %` * `Total Pop`,
+    `NH-Black % weighted` = `NH-Black %` * `Total Pop`,
+    `NH-American Native % weighted` = `NH-American Native %` * `Total Pop`,
+    `NH-Asian % weighted` = `NH-Asian %` * `Total Pop`,
+    `NH-Native Pacific Islander % weighted` = `NH-Native Pacific Islander %` * `Total Pop`,
+    `NH-Other Race % weighted` = `NH-Other Race %` * `Total Pop`,
+    `NH-Two or More Races % weighted` = `NH-Two or More Races %` * `Total Pop`,
+    `% in Management, business, science, and arts weighted` = `% in Management, business, science, and arts` * `Total Pop`,
+    `% in Service weighted` = `% in Service` * `Total Pop`,
+    `% in Sales and Office weighted` = `% in Sales and Office` * `Total Pop`,
+    `% in Resources and Construction weighted` = `% in Resources and Construction` * `Total Pop`,
+    `% in Transportation weighted` = `% in Transportation` * `Total Pop`
+  )
+```
+
+```{r}
+# Calculer la somme pondérée et diviser par la population totale par Etat
+State_data <- US_data %>%
+  group_by(State) %>%
+  summarise(
+    `Less than 9th grade` = sum(`Less than 9th grade weighted`, na.rm = TRUE) / sum(`Total Pop`, na.rm = TRUE),
+    `9th to 12th grade` = sum(`9th to 12th grade weighted`, na.rm = TRUE) / sum(`Total Pop`, na.rm = TRUE),
+    `HS graduate and eq` = sum(`HS graduate and eq weighted`, na.rm = TRUE) / sum(`Total Pop`, na.rm = TRUE),
+    `College,No Degree` = sum(`College,No Degree weighted`, na.rm = TRUE) / sum(`Total Pop`, na.rm = TRUE),
+    `Associates Degree` = sum(`Associates Degree weighted`, na.rm = TRUE) / sum(`Total Pop`, na.rm = TRUE),
+    `Bachelors Degree` = sum(`Bachelors Degree weighted`, na.rm = TRUE) / sum(`Total Pop`, na.rm = TRUE),
+    `Graduate or professional degree` = sum(`Graduate or professional degree weighted`, na.rm = TRUE) / sum(`Total Pop`, na.rm = TRUE),
+    `Gini Index` = sum(`Gini Index weighted`, na.rm = TRUE) / sum(`Total Pop`, na.rm = TRUE),
+    `Median income` = sum(`Median income weighted`, na.rm = TRUE) / sum(`Total Pop`, na.rm = TRUE),
+    `Density` = sum(`Density weighted`, na.rm = TRUE) / sum(`Total Pop`, na.rm = TRUE),
+    `Mean income` = sum(`Mean income weighted`, na.rm = TRUE) / sum(`Area`, na.rm = TRUE),
+    `Hispanic or Latino %` = sum(`Hispanic or Latino % weighted`, na.rm = TRUE) / sum(`Total Pop`, na.rm = TRUE),
+    `NH-White %` = sum(`NH-White % weighted`, na.rm = TRUE) / sum(`Total Pop`, na.rm = TRUE),
+    `NH-Black %` = sum(`NH-Black % weighted`, na.rm = TRUE) / sum(`Total Pop`, na.rm = TRUE),
+    `NH-American Native %` = sum(`NH-American Native % weighted`, na.rm = TRUE) / sum(`Total Pop`, na.rm = TRUE),
+    `NH-Asian %` = sum(`NH-Asian % weighted`, na.rm = TRUE) / sum(`Total Pop`, na.rm = TRUE),
+    `NH-Native Pacific Islander %` = sum(`NH-Native Pacific Islander % weighted`, na.rm = TRUE) / sum(`Total Pop`, na.rm = TRUE),
+    `NH-Other Race %` = sum(`NH-Other Race % weighted`, na.rm = TRUE) / sum(`Total Pop`, na.rm = TRUE),
+    `NH-Two or More Races %` = sum(`NH-Two or More Races % weighted`, na.rm = TRUE) / sum(`Total Pop`, na.rm = TRUE),
+    `% in Management, business, science, and arts` = sum(`% in Management, business, science, and arts weighted`, na.rm = TRUE) / sum(`Total Pop`, na.rm = TRUE),
+    `% in Service` = sum(`% in Service weighted`, na.rm = TRUE) / sum(`Total Pop`, na.rm = TRUE),
+    `% in Sales and Office` = sum(`% in Sales and Office weighted`, na.rm = TRUE) / sum(`Total Pop`, na.rm = TRUE),
+    `% in Resources and Construction` = sum(`% in Resources and Construction weighted`, na.rm = TRUE) / sum(`Total Pop`, na.rm = TRUE),
+    `% in Transportation` = sum(`% in Transportation weighted`, na.rm = TRUE) / sum(`Total Pop`, na.rm = TRUE)
+  )
+
+# Afficher les résultats
+head(State_data)
+```
+
+```{r}
 #write.csv(US_data, "US_data2.csv", row.names = TRUE)
 #write.csv(Texas_data, "Texas_data.csv", row.names = TRUE)
 #write.csv(California_data, "California_data.csv", row.names = TRUE)
 #write.csv(Illinois_data, "Illinois_data.csv", row.names = TRUE)
 ```
+
+
 
 
 

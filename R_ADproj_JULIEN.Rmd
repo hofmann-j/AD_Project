@@ -9,73 +9,48 @@ library(corrplot)
 library(FactoMineR)
 library(factoextra)
 library(readr)
+library(reshape2)
+library(gridExtra)
 ```
 
 ```{r}
-US_data <- read_csv("data.csv")
-US_data <- US_data[,-1]
-
-head(US_data)
+US_data <- read_csv("US_data2.csv")
+California_data <- read_csv("California_data.csv")
+Texas_data <- read_csv("Texas_data.csv")
+Illinois_data <- read_csv("Illinois_data.csv")
 ```
-On supprime la première colonne car ce n'est que le conté et l'Etat mis ensemble (deux colonnes déjà existantes).
-3143 individus, et 34 variables.
-
-Individus : désigner par le comté (donc pas une seule personne physique, c'est une sorte de bureau de vote)
-Variables qualitatives : County et State
-Variables quantitatives : toutes les autres (il faudra faire du seuillage)
-
-Contient des informations datées de 2020 (normalement actualisés en 2040, mais pas le cas ici)
-
-Elections : 
-
-Colonnes 2/3 : Vote démocrate (% et #)
-Colonnes 4/5 : Vote républicain (% et #)
-Colonnes 6/7 : Autres votes (% et #) -> libertarien (1.18%), vert (0,26%) et autres (<= 0,05%)
-
-Education : 
-
-Colonne 8 : % population ayant quitté avant 9th grade (Brevet)
-Colonne 9 : % population ayant quitté entre le 9th grade et le 12th (au cours du lycée)
-Colonne 10 : % population diplômé du high school (Bac)
-Colonne 11 : % études sup mais pas de diplômes
-Colonne 12 : % associates degree (BTS)
-Colonne 13 : % bachelor degree (Licence)
-Colonne 14 : % graduate or professional degree (Master et Doctorat)
-
-Revenu :
-
-Colonne 15 : Indexe Gini (différence entre une répartition équitable des revenus, 0=équitable)
-Colonne 16 : Revenu médian ($)
-Colonne 17 : Revenu moyen ($)
-
-Démographie :
-
-Colonne 18 : Surface (m^2)
-Colonne 19 : Densité (/m^2)
-Colonne 20 : Populations
-Colonne 21 : Hispanic
-
-Ethnie :
-
-Colonne 22 : % Hispanic/Latino
-Colonne 23 : % Non-Hispanic White
-Colonne 24 : % Non-Hispanic Black
-Colonne 25 : % Non-Hispanic Native (Alaska/Indigène)
-Colonne 26 : % Non-Hispanic Asian
-Colonne 27 : % Non-Hispanic Pacific Native (HAwaii/Others)
-Colonne 28 : % Non-Hispanic Other race
-Colonne 29 : % Non-Hispanic 2 or + races
-
-Profession :
-
-Colonne 30 : % Management, business, science, arts 
-Colonne 31 : % Service Occupations (métiers du service)
-Colonne 32 : % Sales and Office (bureau)
-Colonne 33 : % Resources and Construction (énergie et BTP -industrie ?-)
-Colonne 34 : % Transportation
 
 ```{r}
-US_data$party <- ifelse(US_data$value1 > US_data$value2, "Democrat", "Republican")
+#On garde uniquement les valeurs numériques
+Texas_num  <- Texas_data[,c(3:34)]
+
+par(cex.main=2, cex.lab=2, cex.axis=2)
+
+m_corr = cor(Texas_num,use="complete.obs")
+corrplot(m_corr,method="ellipse", order="hclust",tl.col="blue",tl.srt=55, 
+         addCoef.col ="black", cl.cex=1.0, addCoefasPercent = TRUE, number.cex = 0.6,
+         tl.cex = 0.3, type = "upper")
+
+```
+
+```{r}
+acp <- PCA(Texas_num, scale.unit = TRUE, graph = FALSE)
+
+g1 <- fviz_eig(acp, addlabels = TRUE, ylim = c(0,40))
+g2 <- ggplot(melt(acp$ind$coord), aes(x=Var2,y=value))+geom_boxplot()+xlab("")
+grid.arrange(g1,g2,ncol=2)
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
 ```
 
 
